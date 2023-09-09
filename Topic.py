@@ -18,9 +18,6 @@ class Topic:
     def get_content(self):
         """
         Retrieve content associated with the topic.
-        
-        Returns:
-        - list: A list of content dictionaries associated with the topic.
         """
         return self.content_list
     

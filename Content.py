@@ -2,10 +2,6 @@ class Content:
     def __init__(self, content_type, content_data):
         """
         Initialize content with its type and actual data.
-        
-        Args:
-        - content_type (str): The type of content, e.g., 'video', 'article', etc.
-        - content_data (str/dict): Actual data of the content, e.g., URL for video, text for article.
         """
         self.content_type = content_type
         self.content_data = content_data
@@ -13,7 +9,6 @@ class Content:
     def display(self):
         """
         Display the content to the student.
-        Depending on the content type, this function may vary.
         """
         if self.content_type == 'video':
             print(f"Watch this video: {self.content_data}")

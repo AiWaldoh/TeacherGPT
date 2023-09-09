@@ -2,11 +2,6 @@ class Question:
     def __init__(self, question_text, choices, correct_answer):
         """
         Initialize a multiple-choice question.
-        
-        Args:
-        - question_text (str): The text of the question.
-        - choices (dict): A dictionary with keys ('a', 'b', 'c', 'd') and corresponding choice texts.
-        - correct_answer (str): The correct choice key.
         """
         self.text = question_text
         self.choices = choices

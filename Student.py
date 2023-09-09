@@ -2,10 +2,6 @@ class Student:
     def __init__(self, name, student_id):
         """
         Initialize a student with a name and student ID.
-        
-        Args:
-        - name (str): The student's name.
-        - student_id (str/int): A unique identifier for the student.
         """
         self.name = name
         self.student_id = student_id
@@ -28,17 +24,12 @@ class Student:
     def add_score(self, topic, score):
         """
         Add a test score for a specific topic.
-        
-        Args:
-        - topic (str): The topic for which the score should be added.
-        - score (int): The score achieved by the student.
         """
         self.scores[topic] = score
 
     def display_progress(self):
         """
         Display the progress of the student.
-        For now, this will display the topics and associated scores.
         """
         print(f"\nProgress for {self.name} (ID: {self.student_id}):")
         for topic, score in self.scores.items():
