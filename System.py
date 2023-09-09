@@ -1,9 +1,10 @@
 from Student import Student
-from Topic import Topic
+from GPTQuery import GPTQuery
 class System:
     def __init__(self):
         self.students = {}  # Use a dictionary to store students by ID for efficient lookups
         self.topics = []
+        self.gpt_query = GPTQuery()  # Create an instance of GPTQuery.
 
     def add_student(self, student):
         """Add a student to the system."""
@@ -30,13 +31,54 @@ class System:
         """Return the student object with the specified ID."""
         return self.students.get(student_id, None)
 
+    def generate_theory(self, topic, name):
+        # Get 3 paragraphs using GPTQuery.
+        paragraphs = self.gpt_query.query_gpt(topic, name)
+        return paragraphs.split("\n")  # Assuming paragraphs are separated by newline.
+
+    def interactive_session(self, topic, paragraphs):
+        print("Starting interactive session...")
+        # For each paragraph, present it and allow for Q&A.
+        for index, paragraph in enumerate(paragraphs):
+            print(f"Displaying paragraph {index + 1}:")
+            print(paragraph)
+
+            # A loop to handle potential questions from the student.
+            while True:
+                student_input = input("Do you have any questions or need more details about this? (Type 'no' or 'next' to move on): ").strip().lower()
+                
+                # Debug print to check what we got from the input
+                print(f"Processed input: '{student_input}'")
+                
+                if student_input in ['no', 'next']:
+                    print("Breaking out of the inner loop.")
+                    break  # this will break out of the inner while loop
+                
+                # If student has a question, query GPT for an answer.
+                response = self.gpt_query.query_gpt(topic.name, student_input)
+                print(response)
+            print(f"Finished with paragraph {index + 1}.")
+
+
+
+
+
+
     def start_lesson(self, student_id, topic_name):
         """Start a lesson for a student on a particular topic."""
+        print("Starting lesson...")
         student = self.find_student_by_id(student_id)
         topic = self.find_topic_by_name(topic_name)
 
         if student and topic:
+            # Generate the theory and begin the interactive session.
+            paragraphs = self.generate_theory(topic, "agile")
+            filtered_paragraphs = [p for p in paragraphs if p.strip()]
+            self.interactive_session(topic, filtered_paragraphs)
+            
+            # Assuming that after the Q&A session, you want to display the rest of the content
             topic.display_content()
+
         else:
             print("Student or Topic not found!")
 

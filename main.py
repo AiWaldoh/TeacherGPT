@@ -36,6 +36,7 @@ def main():
 
     # Emulate a student learning session
     sys.start_lesson(12345, "Agile Methodology")
+
     sys.conduct_test(12345, "Agile Methodology")
     sys.display_student_progress(12345)
 
