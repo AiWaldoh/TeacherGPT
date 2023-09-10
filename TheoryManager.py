@@ -26,13 +26,14 @@ class TheoryManager:
         return self.theory_dict.get(filename, "Item not found.")
 
     def split_theory(self, text):
-        splits = re.split(r"\n*\d+\.", text)
-        return [s.strip() for s in splits if s.strip()]
+        lines_with_numbers = re.findall(r"^\d+\..*$", text, re.M)
+        return lines_with_numbers
 
-    def enhance_theory(self, theory_split, name):
+    def enhance_theory(self, theory_split, subject):
         enhanced_dict = {}
         for theory in theory_split:
             print(f"Enhancing point: {theory}")
-            enhanced_content = self.gpt.query_gpt(topic=theory, name=name)
+            # gpt api call
+            enhanced_content = self.gpt.query_gpt(topic=theory, subject=subject)
             enhanced_dict[theory] = enhanced_content
         return enhanced_dict

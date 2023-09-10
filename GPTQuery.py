@@ -9,9 +9,19 @@ class GPTQuery(GPTBase):
         super().__init__(system_prompt=prompt)
         self.prompt = prompt
 
-    def query_gpt(self, topic, name):
+    def query_gpt(self, topic, subject):
         prompt = f"""
-           Préparer 3 paragraphes basé sur {name} pour élaborer plus en détails sur ce text: {topic} 
+           Préparer 3 paragraphes basé sur {topic} pour élaborer plus en détails sur ce sujet: {subject} 
+        """
+        return self.generate_message(prompt)
+
+    def ask_question(self, contexte, question, style):
+        prompt = f"""
+            Répondez à un etudiant du secondaire à la question suivante: {question}
+            La question est posée concernant ce texte: {contexte}
+            
+            Répondez avec le style suivant: 
+            {style}
         """
         return self.generate_message(prompt)
 

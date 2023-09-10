@@ -7,14 +7,20 @@ from TheoryManager import TheoryManager
 
 
 def main():
+    filename = "introduction.txt"
     sys = System()
     students = [("John Doe", 12345), ("Jane Smith", 67890)]
     for student_name, student_id in students:
         sys.register_student(student_name, student_id)
-    agile_topics = create_agile_topics()
+    TOPIC_SUBJECT = "Introduction au Génie Logiciel"
+    agile_topics = create_agile_topics(TOPIC_SUBJECT, filename)
+
+    # why not pass agile_topics to student session?
     for agile in agile_topics:
         sys.add_topic(agile)
-    student_session(sys, 12345, "Agile Methodology")
+
+    # agile topics is stored in sys object, so no need to pass it here, we retrieve it later
+    student_session(sys, 12345, TOPIC_SUBJECT)
 
 
 def chunks(lst, n):
@@ -23,7 +29,7 @@ def chunks(lst, n):
         yield lst[i : i + n]
 
 
-def create_agile_questions(content):
+def create_agile_questions(content) -> Test:
     """Generate a set of questions for the given agile content."""
     q1 = Question(
         "What is Agile?",
@@ -53,20 +59,23 @@ def create_agile_questions(content):
     return agile_test
 
 
-def create_agile_topics():
+def create_agile_topics(TOPIC_SUBJECT, filename="introduction.txt"):
     manager = TheoryManager()
-    theory = manager.get_theory("agile-1.txt")
-    print("Extracting important points from theory...")
+    theory = manager.get_theory(filename)
+
+    print("Extracting important points from theory... ")
+    # gpt api call
     theory = manager.gpt.summarize_theory(theory)
+    print(theory)
     theory_split = manager.split_theory(theory)
     print("creating 3 pargraphs for each important point...")
     # TODO: replace this static variable for something dynamic
-    enhanced_theory = manager.enhance_theory(theory_split[:5], "Méthodologie Agile")
+    enhanced_theory = manager.enhance_theory(theory_split, TOPIC_SUBJECT)
 
     agile_topics = []
     for chunk in chunks(list(enhanced_theory.items()), 3):
         agile_topic = Topic(
-            name="Agile Methodology",
+            name=TOPIC_SUBJECT,
             description="An iterative approach to software development.",
         )
 
@@ -75,13 +84,15 @@ def create_agile_topics():
                 content_type="article", content_data=enhanced_content
             )
             agile_topic.add_content(agile_content)
-            agile_test = create_agile_questions(agile_content)
-            agile_topic.set_test(agile_test)
+
+        agile_test = create_agile_questions(agile_content)
+
+        agile_topic.set_test(agile_test)
         agile_topics.append(agile_topic)
     return agile_topics
 
 
-def student_session(system, student_id, topic_name):
+def student_session(system: System, student_id, topic_name):
     system.start_lesson(student_id, topic_name)
     system.conduct_test(student_id, topic_name)
     system.display_student_progress(student_id)
