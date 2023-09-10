@@ -10,17 +10,17 @@ class Topic:
 
     def add_content(self, content):
         """Add content to the topic."""
-        if content.content_type not in [c.content_type for c in self.contents]:
+        if content.content_data not in [c.content_data for c in self.contents]:
             self.contents.append(content)
         else:
-            print(f"Content {content.content_type} already exists in this topic!")
+            print(f"Content already exists in this topic!")
 
     def get_content(self):
         """
         Retrieve content associated with the topic.
         """
         return self.content_list
-    
+
     def set_test(self, test):
         """Set the test for this topic."""
         self.test = test
@@ -43,6 +43,3 @@ class Topic:
 
     def __str__(self):
         return f"Topic: {self.name}\nDescription: {self.description}\nNumber of Contents: {len(self.contents)}"
-        
-
-

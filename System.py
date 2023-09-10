@@ -1,10 +1,12 @@
 from Student import Student
 from GPTQuery import GPTQuery
+
+
 class System:
     def __init__(self):
-        self.students = {} 
+        self.students = {}
         self.topics = []
-        self.gpt_query = GPTQuery() 
+        self.gpt_query = GPTQuery()
 
     def add_student(self, student):
         if student.id not in self.students:
@@ -13,12 +15,14 @@ class System:
             print(f"Student with ID {student.id} already exists!")
 
     def add_topic(self, topic):
+        print(f"Adding topic {topic}...")
         if topic not in self.topics:
             self.topics.append(topic)
         else:
             print(f"Topic {topic.name} already added!")
 
     def find_topic_by_name(self, topic_name):
+        print(f"Finding topic {topic_name}...")
         for topic in self.topics:
             if topic.name == topic_name:
                 return topic
@@ -38,11 +42,17 @@ class System:
             # print(f"Displaying paragraph {index + 1}:")
             print(paragraph)
             while True:
-                student_input = input("Do you have any questions or need more details about this? (Type 'no' or 'next' to move on): ").strip().lower()
-                                
-                if student_input in ['no', 'next']:
-                    break  
-                
+                student_input = (
+                    input(
+                        "Do you have any questions or need more details about this? (Type 'no' or 'next' to move on): "
+                    )
+                    .strip()
+                    .lower()
+                )
+
+                if student_input in ["no", "next"]:
+                    break
+
                 response = self.gpt_query.query_gpt(topic.name, student_input)
                 print(response)
             # print(f"Finished with paragraph {index + 1}.")
@@ -54,11 +64,18 @@ class System:
         topic = self.find_topic_by_name(topic_name)
 
         if student and topic:
-            # Generate the theory and begin the interactive session.
-            paragraphs = self.generate_theory(topic, "agile")
-            filtered_paragraphs = [p for p in paragraphs if p.strip()]
+            # Fetch the enhanced theory directly from the topic's contents as a list
+            enhanced_theory_list = [content.content_data for content in topic.contents]
+            enhanced_theory_list = []
+            for content in topic.contents:
+                enhanced_theory_list.extend(
+                    content.content_data.split("\n\n")
+                )  # Assuming two newlines denote a paragraph
+            filtered_paragraphs = [p for p in enhanced_theory_list if p.strip()]
+
+            # Start the interactive session with the enhanced theory list
             self.interactive_session(topic, filtered_paragraphs)
-            
+
             # Assuming that after the Q&A session, you want to display the rest of the content
             topic.display_content()
 
@@ -85,7 +102,7 @@ class System:
             self.students[student_id] = new_student
         else:
             print(f"Student with ID {student_id} already exists!")
-    
+
     def display_student_progress(self, student_id):
         """Display the progress of a student."""
         student = self.find_student_by_id(student_id)
