@@ -3,6 +3,7 @@ from GPTQuery import GPTQuery
 from Topic import Topic
 import random
 from learning_styles_fr import learning_styles_json_french
+from Chatbot import Chatbot
 
 
 class System:
@@ -34,10 +35,32 @@ class System:
     def find_student_by_id(self, student_id):
         return self.students.get(student_id, None)
 
-    # def generate_theory(self, topic, name):
-    #     # Get 3 paragraphs using GPTQuery.
-    #     paragraphs = self.gpt_query.query_gpt(topic, name)
-    #     return paragraphs.split("\n")  # Assuming paragraphs are separated by newline.
+    def chat_with_student(self):
+        system_prompt = (
+            "This is the chatbot for course SYST1046. The goal is to provide information "
+            "and support to students. Let's engage in some small talk first!"
+        )
+
+        chatbot = Chatbot(system_prompt)
+
+        print(
+            "Professeur: Bonjour! Bienvenue au cours SYST1046. Comment ça va aujourd'hui?"
+        )
+        while True:
+            # Get input from the user
+            user_message = input("Étudiant: ")
+
+            # Process the user's message and get a response
+            response = chatbot.small_talk(user_message)
+
+            # Print the response
+            print(f"Professeur: {response}")
+
+            # Break the loop if the student agrees to start the course
+            if "Commençons notre cours." in response:
+                break
+
+        print("Professeur: Voici le plan du cours...")  # You can expand from here
 
     def interactive_session(self, topic, paragraphs):
         # For each paragraph, present it and allow for Q&A.

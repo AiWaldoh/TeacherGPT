@@ -60,6 +60,8 @@ def create_agile_questions(content) -> Test:
 
 
 def create_agile_topics(TOPIC_SUBJECT, filename="introduction.txt"):
+    sys = System()
+    sys.chat_with_student()
     manager = TheoryManager()
     theory = manager.get_theory(filename)
 
@@ -70,7 +72,7 @@ def create_agile_topics(TOPIC_SUBJECT, filename="introduction.txt"):
     theory_split = manager.split_theory(theory)
     print("creating 3 pargraphs for each important point...")
     # TODO: replace this static variable for something dynamic
-    enhanced_theory = manager.enhance_theory(theory_split, TOPIC_SUBJECT)
+    enhanced_theory = manager.enhance_theory(theory_split[:5], TOPIC_SUBJECT)
 
     agile_topics = []
     for chunk in chunks(list(enhanced_theory.items()), 3):
@@ -93,9 +95,10 @@ def create_agile_topics(TOPIC_SUBJECT, filename="introduction.txt"):
 
 
 def student_session(system: System, student_id, topic_name):
-    system.start_lesson(student_id, topic_name)
-    system.conduct_test(student_id, topic_name)
-    system.display_student_progress(student_id)
+    system.chat_with_student()
+    # system.start_lesson(student_id, topic_name)
+    # system.conduct_test(student_id, topic_name)
+    # system.display_student_progress(student_id)
 
 
 if __name__ == "__main__":
