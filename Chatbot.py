@@ -24,44 +24,41 @@ class Chatbot(GPTBase):
             "les films récents",
             "la musique populaire",
             "des activités de loisir",
-            "des projets d'été",
+            "des projets personnels en informatique",
         ]
-
-    def check_exit_condition(self, message):
-        """Checks if the student wants to exit the small talk phase."""
-        return "oui" in message.lower()
 
     def small_talk(self, message):
         self.history.append(f"Étudiant: {message}")
-
-        # Check for exit condition
-        if self.check_exit_condition(message):
-            return "Très bien! Commençons notre cours."
-
         self.message_count += 1
 
         context_dynamic = "\n".join(self.history[-6:])
         context_full = (
             f"{self.context_static}\nConversation récente:\n{context_dynamic}"
         )
-
+        print(self.message_count)
         if self.message_count == 1:
+            print("First message")
             style = (
                 f"Répondez de manière chaleureuse à son sentiment, sans le saluer à nouveau. "
                 f"Introduisez subtilement une question sur {random.choice(self.topics)}."
             )
-        elif self.message_count % 2 == 0 and self.message_count <= 5:
+        elif 2 <= self.message_count <= 4:
+            print("Even message")
             style = (
-                f"Répondez de manière chaleureuse à son message. "
-                f"Introduisez ensuite subtilement une question sur {random.choice(self.topics)}."
+                f"Répondez de manière chaleureuse à son message et posez une question suivi, sans le saluer à nouveau.  "
+                # f"Introduisez ensuite subtilement une question sur {random.choice(self.topics)}."
             )
-        elif 6 <= self.message_count <= 10:
+        elif 5 <= self.message_count <= 8:
             style = (
-                "Répondez de manière chaleureuse la conversation précédente. "
+                "Répondez de manière chaleureuse la conversation précédente, sans le saluer à nouveau.  "
                 "Terminez en demandant s'il souhaite commencer l'apprentissage comme suit: 'Est-ce que vous voulez commencer le cours?'"
             )
+            if "oui" in message.lower():
+                return "Commençons le cours."
         else:
             style = "Demandez seulement s'il souhaite commencer l'apprentissage."
+            if "oui" in message.lower():
+                return "Commençons le cours."
 
         prompt = f"""
             Répondez en fonction du contexte suivant: 

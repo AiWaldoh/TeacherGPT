@@ -60,38 +60,84 @@ class System:
             if "Commençons notre cours." in response:
                 break
 
-        print("Professeur: Voici le plan du cours...")  # You can expand from here
+        # print("Professeur: Voici le plan du cours...")  # You can expand from here
+
+    # def interactive_session(self, topic, paragraphs):
+    #     JOKE_INTERVAL = 3
+    #     MAX_HISTORY = 2
+    #     history = []
+
+    #     for index, paragraph in enumerate(paragraphs):
+    #         print(paragraph)
+
+    #         # Maintain the history of paragraphs
+    #         history.append(paragraph)
+    #         if len(history) > MAX_HISTORY:
+    #             history.pop(0)  # Remove the earliest paragraph
+
+    #         # Ask the student if they have questions
+    #         while True:
+    #             student_input = (
+    #                 input(
+    #                     "\n\nAvez vous des questions ou voulez vous des clarifications? (Typer 'non' pour continuer): "
+    #                 )
+    #                 .strip()
+    #                 .lower()
+    #             )
+
+    #             if student_input in ["non"]:
+    #                 break
+    #             random_style = random.choice(learning_styles_json_french["styles"])
+    #             response = self.gpt_query.ask_question(
+    #                 student_input, paragraph, random_style
+    #             )
+    #             print(response)
+
+    #         # Tell a joke based on interval
+    #         if (index + 1) % JOKE_INTERVAL == 0:
+    #             joke_query = GPTQuery()
+    #             joke_content = " ".join(history)
+    #             joke_types = ["knock knock", "dad joke", "walks into a bar"]
+    #             selected_joke_type = random.choice(joke_types)
+    #             joke = joke_query.get_joke(joke_content, joke_type=selected_joke_type)
+    #             print(f"\nEn passant... {joke}\n")
+
+    #         print("\nContinuons!\n\n")
+
+    # def start_lesson(self, student_id, topic_name):
+    #     """Start a lesson for a student on a particular topic."""
+    #     student = self.find_student_by_id(student_id)
+    #     topic: Topic = self.find_topic_by_name(topic_name)
+
+    #     if student and topic:
+    #         enhanced_theory_list = []
+    #         for content in topic.contents:
+    #             enhanced_theory_list.extend(content.content_data.split("\n\n"))
+    #         filtered_paragraphs = [p for p in enhanced_theory_list if p.strip()]
+
+    #         self.interactive_session(topic, filtered_paragraphs)
+
+    #         topic.display_content()
+
+    #     else:
+    #         print("Student or Topic not found!")
 
     def interactive_session(self, topic, paragraphs):
+        interactions = []
         JOKE_INTERVAL = 3
         MAX_HISTORY = 2
         history = []
 
         for index, paragraph in enumerate(paragraphs):
-            print(paragraph)
+            interactions.append(paragraph)
 
             # Maintain the history of paragraphs
             history.append(paragraph)
             if len(history) > MAX_HISTORY:
                 history.pop(0)  # Remove the earliest paragraph
 
-            # Ask the student if they have questions
-            while True:
-                student_input = (
-                    input(
-                        "\n\nAvez vous des questions ou voulez vous des clarifications? (Typer 'non' pour continuer): "
-                    )
-                    .strip()
-                    .lower()
-                )
-
-                if student_input in ["non"]:
-                    break
-                random_style = random.choice(learning_styles_json_french["styles"])
-                response = self.gpt_query.ask_question(
-                    student_input, paragraph, random_style
-                )
-                print(response)
+            # Since we can't wait for input in this flow, we skip directly to the joke, assuming no clarification was needed.
+            # However, the logic could be further modified if you decide to incorporate interactions in a different way.
 
             # Tell a joke based on interval
             if (index + 1) % JOKE_INTERVAL == 0:
@@ -100,27 +146,42 @@ class System:
                 joke_types = ["knock knock", "dad joke", "walks into a bar"]
                 selected_joke_type = random.choice(joke_types)
                 joke = joke_query.get_joke(joke_content, joke_type=selected_joke_type)
-                print(f"\nEn passant... {joke}\n")
+                interactions.append(f"En passant... {joke}")
 
-            print("\nContinuons!\n\n")
+            interactions.append("Continuons!")
+
+        return interactions
 
     def start_lesson(self, student_id, topic_name):
         """Start a lesson for a student on a particular topic."""
+        interactions = []
         student = self.find_student_by_id(student_id)
         topic: Topic = self.find_topic_by_name(topic_name)
-
+        print(topic)
+        print(student)
         if student and topic:
             enhanced_theory_list = []
             for content in topic.contents:
                 enhanced_theory_list.extend(content.content_data.split("\n\n"))
             filtered_paragraphs = [p for p in enhanced_theory_list if p.strip()]
 
-            self.interactive_session(topic, filtered_paragraphs)
-
-            topic.display_content()
+            interactions.extend(self.interactive_session(topic, filtered_paragraphs))
+            interactions.append(topic.display_content())
 
         else:
-            print("Student or Topic not found!")
+            interactions.append("Student or Topic not found!")
+
+        return interactions
+
+    # Suppose these methods are already present to get the student and topic. I'm just adding placeholder implementations.
+    def find_student_by_id(self, student_id):
+        return self.students.get(student_id)
+
+    def find_topic_by_name(self, topic_name):
+        for topic in self.topics:
+            if topic.name == topic_name:
+                return topic
+        return None
 
     def conduct_test(self, student_id, topic_name):
         """Conduct a test for a specific topic for a student."""

@@ -63,7 +63,7 @@ def create_agile_topics(TOPIC_SUBJECT, filename="introduction.txt"):
     manager = TheoryManager()
     theory = manager.get_theory(filename)
 
-    print("Extracting important points from theory... ")
+    # print("Extracting important points from theory... ")
     # gpt api call
     theory = manager.gpt.summarize_theory(theory)
     print(theory)
