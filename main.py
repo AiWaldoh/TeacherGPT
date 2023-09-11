@@ -60,8 +60,6 @@ def create_agile_questions(content) -> Test:
 
 
 def create_agile_topics(TOPIC_SUBJECT, filename="introduction.txt"):
-    sys = System()
-    sys.chat_with_student()
     manager = TheoryManager()
     theory = manager.get_theory(filename)
 
@@ -96,9 +94,9 @@ def create_agile_topics(TOPIC_SUBJECT, filename="introduction.txt"):
 
 def student_session(system: System, student_id, topic_name):
     system.chat_with_student()
-    # system.start_lesson(student_id, topic_name)
-    # system.conduct_test(student_id, topic_name)
-    # system.display_student_progress(student_id)
+    system.start_lesson(student_id, topic_name)
+    system.conduct_test(student_id, topic_name)
+    system.display_student_progress(student_id)
 
 
 if __name__ == "__main__":
