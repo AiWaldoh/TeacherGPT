@@ -33,21 +33,11 @@ class TheoryManager:
         lines_with_numbers = re.findall(r"^\d+\..*$", text, re.M)
         return lines_with_numbers
 
-    # def enhance_theory(self, theory_split, subject):
-    #     enhanced_dict = {}
-    #     for theory in theory_split:
-    #         print(f"Enhancing point: {theory}")
-    #         # gpt api call
-    #         enhanced_content = self.gpt.query_gpt(topic=theory, subject=subject)
-    #         enhanced_dict[theory] = enhanced_content
-    #     return enhanced_dict
-
     def _enhance_single_theory(self, theory, subject):
-        print(f"Enhancing point: {theory}")
-        # gpt api call
         return theory, self.gpt.query_gpt(topic=theory, subject=subject)
 
     def enhance_theory(self, theory_split, subject):
+        print("Enhancing content...")
         enhanced_dict = {}
 
         with ThreadPoolExecutor(

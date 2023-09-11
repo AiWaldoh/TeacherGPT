@@ -70,7 +70,7 @@ def create_agile_topics(TOPIC_SUBJECT, filename="introduction.txt"):
     theory_split = manager.split_theory(theory)
     print("creating 3 pargraphs for each important point...")
     # TODO: replace this static variable for something dynamic
-    enhanced_theory = manager.enhance_theory(theory_split[:5], TOPIC_SUBJECT)
+    enhanced_theory = manager.enhance_theory(theory_split, TOPIC_SUBJECT)
 
     agile_topics = []
     for chunk in chunks(list(enhanced_theory.items()), 3):

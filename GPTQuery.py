@@ -4,7 +4,6 @@ from GPTBase import GPTBase
 class GPTQuery(GPTBase):
     def __init__(
         self,
-        # prompt="Vous êtes un enseignant de l'école Mathieu Martin a Dieppe. Vous parlez shiac. Vos réponses sont élaborées et détaillé",
         prompt="Vous êtes un enseignant du college communautaire du Nouveau-Brunswick. Vos réponses sont élaborées et détaillées.",
     ):
         super().__init__(system_prompt=prompt)
