@@ -63,9 +63,19 @@ class System:
         print("Professeur: Voici le plan du cours...")  # You can expand from here
 
     def interactive_session(self, topic, paragraphs):
-        # For each paragraph, present it and allow for Q&A.
+        JOKE_INTERVAL = 3
+        MAX_HISTORY = 2
+        history = []
+
         for index, paragraph in enumerate(paragraphs):
             print(paragraph)
+
+            # Maintain the history of paragraphs
+            history.append(paragraph)
+            if len(history) > MAX_HISTORY:
+                history.pop(0)  # Remove the earliest paragraph
+
+            # Ask the student if they have questions
             while True:
                 student_input = (
                     input(
@@ -82,7 +92,17 @@ class System:
                     student_input, paragraph, random_style
                 )
                 print(response)
-            print("Continuons!\n")
+
+            # Tell a joke based on interval
+            if (index + 1) % JOKE_INTERVAL == 0:
+                joke_query = GPTQuery()
+                joke_content = " ".join(history)
+                joke_types = ["knock knock", "dad joke", "walks into a bar"]
+                selected_joke_type = random.choice(joke_types)
+                joke = joke_query.get_joke(joke_content, joke_type=selected_joke_type)
+                print(f"\nEn passant... {joke}\n")
+
+            print("\nContinuons!\n\n")
 
     def start_lesson(self, student_id, topic_name):
         """Start a lesson for a student on a particular topic."""

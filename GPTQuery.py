@@ -25,6 +25,7 @@ class GPTQuery(GPTBase):
             Le style de votre réponse doit être: 
             {style}
         """
+        print(style)
         return self.generate_message(prompt, temperature=0.5)
 
     def summarize_theory(self, theory):
@@ -37,3 +38,13 @@ class GPTQuery(GPTBase):
             3. ...
         """
         return self.generate_message(prompt)
+
+    def get_joke(self, history, joke_type="walks into a bar"):
+        # Construct a context-aware prompt for generating a joke
+        prompt = f"""
+        Basé sur le contexte suivant: 
+        "{history}"
+        Pouvez-vous raconter une blague de type {joke_type} qui est pertinente ou inspirée par ce contenu?
+        """
+
+        return self.generate_message(prompt, temperature=0.9)
