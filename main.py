@@ -1,103 +1,48 @@
-from System import System
-from Topic import Topic
-from Test import Test
-from Question import Question
-from Content import Content
-from TheoryManager import TheoryManager
+import streamlit as st
+from ChatController import ChatController
 
+# Streamlit Configuration
+st.set_page_config(page_title="Chat with Professor")
 
-def main():
-    filename = "introduction.txt"
-    sys = System()
-    students = [("John Doe", 12345), ("Jane Smith", 67890)]
-    for student_name, student_id in students:
-        sys.register_student(student_name, student_id)
-    TOPIC_SUBJECT = "Introduction au Génie Logiciel"
-    agile_topics = create_agile_topics(TOPIC_SUBJECT, filename)
+# Initialize ChatController
+if "controller" not in st.session_state:
+    st.session_state.controller = ChatController()
+controller = st.session_state.controller
 
-    # why not pass agile_topics to student session?
-    for agile in agile_topics:
-        sys.add_topic(agile)
+# Security
+if not controller.check_password():
+    st.stop()
 
-    # agile topics is stored in sys object, so no need to pass it here, we retrieve it later
-    student_session(sys, 12345, TOPIC_SUBJECT)
-
-
-def chunks(lst, n):
-    """Yield successive n-sized chunks from lst."""
-    for i in range(0, len(lst), n):
-        yield lst[i : i + n]
-
-
-def create_agile_questions(content) -> Test:
-    """Generate a set of questions for the given agile content."""
-    q1 = Question(
-        "What is Agile?",
+# Welcome Message
+if "initialized" not in st.session_state:
+    st.session_state.initialized = True
+    st.session_state.messages = [
         {
-            "a": "A car model",
-            "b": "A bird species",
-            "c": "A software development methodology",
-            "d": "A type of rock",
-        },
-        "c",
-    )
-    q2 = Question(
-        "Which is NOT a principle of Agile?",
-        {
-            "a": "Regular customer feedback",
-            "b": "Following a strict plan",
-            "c": "Working software is the primary measure of progress",
-            "d": "Welcome changing requirements",
-        },
-        "b",
-    )
+            "role": "Professeur",
+            "content": "Bonjour! Bienvenue au cours SYST1046. Comment ça va aujourd'hui?",
+        }
+    ]
 
-    agile_test = Test(content)
-    agile_test.add_question(q1)
-    agile_test.add_question(q2)
+# Display Messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.write(message["content"])
 
-    return agile_test
+# User Input
+user_input = st.chat_input()
 
+if user_input:
+    with st.chat_message("Étudiant"):
+        st.write(user_input)
+    st.session_state.messages.append({"role": "Étudiant", "content": user_input})
 
-def create_agile_topics(TOPIC_SUBJECT, filename="introduction.txt"):
-    manager = TheoryManager()
-    theory = manager.get_theory(filename)
+    responses = controller.process_message(user_input)
 
-    # print("Extracting important points from theory... ")
-    # gpt api call
-    theory = manager.gpt.summarize_theory(theory)
-    print(theory)
-    theory_split = manager.split_theory(theory)
-    print("creating 3 pargraphs for each important point...")
-    # TODO: replace this static variable for something dynamic
-    enhanced_theory = manager.enhance_theory(theory_split, TOPIC_SUBJECT)
+    # In case the response is just a single string (backward compatibility)
+    if not isinstance(responses, list):
+        responses = [responses]
 
-    agile_topics = []
-    for chunk in chunks(list(enhanced_theory.items()), 3):
-        agile_topic = Topic(
-            name=TOPIC_SUBJECT,
-            description="An iterative approach to software development.",
-        )
-
-        for original_theory, enhanced_content in chunk:
-            agile_content = Content(
-                content_type="article", content_data=enhanced_content
-            )
-            agile_topic.add_content(agile_content)
-
-        agile_test = create_agile_questions(agile_content)
-
-        agile_topic.set_test(agile_test)
-        agile_topics.append(agile_topic)
-    return agile_topics
-
-
-def student_session(system: System, student_id, topic_name):
-    system.chat_with_student()
-    system.start_lesson(student_id, topic_name)
-    system.conduct_test(student_id, topic_name)
-    system.display_student_progress(student_id)
-
-
-if __name__ == "__main__":
-    main()
+    for response in responses:
+        with st.chat_message("Professeur"):
+            st.write(response)
+        st.session_state.messages.append({"role": "Professeur", "content": response})

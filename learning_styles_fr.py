@@ -14,7 +14,7 @@ learning_styles_json_french = {
         },
         {
             "style": "Écrire une chanson rap",
-            "description": "Transformez l'information en paroles de chanson rap, avec rimes et rythme.",
+            "description": "Écris une chanson rap sur le sujet.",
         },
     ]
 }
