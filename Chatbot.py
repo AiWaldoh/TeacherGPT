@@ -37,13 +37,11 @@ class Chatbot(GPTBase):
         )
         print(self.message_count)
         if self.message_count == 1:
-            print("First message")
             style = (
                 f"Répondez de manière chaleureuse à son sentiment, sans le saluer à nouveau. "
                 f"Introduisez subtilement une question sur {random.choice(self.topics)}."
             )
         elif 2 <= self.message_count <= 3:
-            print("Even message")
             style = (
                 f"Répondez de manière chaleureuse à son message et posez une question suivi, sans le saluer à nouveau.  "
                 # f"Introduisez ensuite subtilement une question sur {random.choice(self.topics)}."

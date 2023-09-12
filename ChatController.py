@@ -25,12 +25,12 @@ def chunks(lst, n):
         yield lst[i : i + n]
 
 
-@st.cache_resource(show_spinner=False)
+@st.cache_resource(show_spinner=True)
 def get_chatbot(prompt):
     return Chatbot(prompt)
 
 
-@st.cache_resource(show_spinner=False)
+@st.cache_resource(show_spinner=True)
 def get_system(student_name, student_id):
     filename = "introduction.txt"
     TOPIC_SUBJECT = "Introduction au Génie Logiciel"
@@ -165,6 +165,7 @@ class ChatController:
             response = self.handle_apprentissage(message)
             if "Fin de l'apprentissage." in response:
                 st.session_state.state = "test"
+                return "Entering test phase. incomplete"
             else:
                 return (
                     response
@@ -188,8 +189,11 @@ class ChatController:
         # If the student's response is 'non', move to the next paragraph or end if all are covered
         if message.lower() == "non":
             st.session_state.current_paragraph_index += 1
-            if st.session_state.current_paragraph_index >= len(
-                st.session_state.teachings
+            if (
+                st.session_state.current_paragraph_index
+                >= len(st.session_state.teachings)
+                or st.session_state.teachings[st.session_state.current_paragraph_index]
+                is None
             ):
                 return "Fin de l'apprentissage."
             else:
