@@ -6,11 +6,11 @@ learning_styles_json_french = {
         },
         {
             "style": "Analogie inattendue",
-            "description": "Utilisez une analogie surprenante mais pertinente pour expliquer la réponse, même si elle semble hors contexte à première vue..",
+            "description": "Utilisez une analogie pertinente pour expliquer la réponse.",
         },
         {
             "style": "Narration",
-            "description": "Présentez votre réponse sous forme d'une courte histoire ou d'un récit captivant.",
+            "description": "Présentez votre réponse sous forme d'une courte histoire.",
         },
         {
             "style": "Écrire une chanson rap",

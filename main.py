@@ -1,6 +1,6 @@
 import streamlit as st
 from ChatController import ChatController
-
+from Authentication import check_password
 # Streamlit Configuration
 st.set_page_config(page_title="Chat with Professor")
 
@@ -10,7 +10,7 @@ if "controller" not in st.session_state:
 controller = st.session_state.controller
 
 # Security
-if not controller.check_password():
+if not check_password():
     st.stop()
 
 # Welcome Message
